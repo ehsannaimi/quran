@@ -1,0 +1,31 @@
+name: Send Quran Page Daily
+
+on:
+  schedule:
+    - cron: '00 04 * * *'   # هر روز 04:00 UTC => 07:30 Iran
+  workflow_dispatch:
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install pyTelegramBotAPI jdatetime hijridate
+
+      - name: Run Quran Sender
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: |
+          python3 send_quran.py
