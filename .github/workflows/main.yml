@@ -3,6 +3,8 @@ name: Build Quran Bot
 on:
   push:
     branches: [ "main" ]
+  schedule:
+    - cron: "0 0 * * *"   # اجرای روزانه
   workflow_dispatch:
 
 jobs:
