@@ -1,30 +1,32 @@
-name: Quran Bot Daily Sender
+name: Deploy Quran Project
 
 on:
-  schedule:
-    - cron: "00 04 * * *"   # اجرای روزانه ساعت ۷:۳۰ ایران
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
-  run-bot:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.11"
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
-    - name: Install dependencies
-      run: |
-        pip install pyTelegramBotAPI jdatetime hijridate
+      - name: Install Dependencies
+        run: npm install
 
-    - name: Run bot script
-      env:
-        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-        CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
-      run: |
-        python send_quran.py
+      - name: Build Project
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
